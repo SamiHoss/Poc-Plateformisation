@@ -1,0 +1,41 @@
+#######################################
+# Panorama TEST Service               #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: remote-panorama
+  name: remote-panorama
+spec:
+  type : ClusterIP
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+ name: remote-panorama
+subsets:
+ - addresses:
+     - ip: 10.132.0.16
+   ports:
+     - port: 8080
+---
+#######################################
+# Kong Route                          #
+#######################################
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: panorama-demo
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /panorama
+        backend:
+          serviceName: remote-panorama
+          servicePort: 80
