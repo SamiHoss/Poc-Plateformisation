@@ -49,8 +49,7 @@ metadata:
   name: demo
 spec:
   rules:
-  - host: hello-world.default.svc
-    http:
+  - http:
       paths:
       - path: /hello
         backend:
