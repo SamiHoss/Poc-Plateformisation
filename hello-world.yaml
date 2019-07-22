@@ -1,19 +1,17 @@
-######################################
-# Hello-world service  +  Kong Route #
-######################################
+#######################################
+# Hello-world service                 #
+#######################################
 apiVersion: v1
 kind: Service
 metadata:
-  name: hello-world
   labels:
     app: hello-world
-    service: hello-world
+  name: hello-world
 spec:
   ports:
   - port: 80
-    name: http
-    targetPort: 80
-    protocol: TCP 
+    protocol: TCP
+    targetPort: 8000
   selector:
     app: hello-world
 ---
@@ -38,12 +36,14 @@ spec:
     spec:
       containers:
       - name: hello-world
-        image: mariogabrielg/hello-world:latest
+        image: mariogabrielg/hello-sentelis:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 5000
-          protocol: TCP
+        - containerPort: 8000
 ---
+#######################################
+# Kong Route                          #
+#######################################
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -56,4 +56,3 @@ spec:
         backend:
           serviceName: hello-world
           servicePort: 80
----
