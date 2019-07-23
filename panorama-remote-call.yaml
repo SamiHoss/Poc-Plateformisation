@@ -1,0 +1,58 @@
+#######################################
+# Panorama-remote-call                #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: panorama-remote-call
+  name: panorama-remote-call
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: panorama-remote-call
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: panorama-remote-call
+  labels:
+    app: panorama-remote-call
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: panorama-remote-call
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: panorama-remote-call
+        version: v1
+    spec:
+      containers:
+      - name: panorama-remote-call
+        image: samihoss/poc-plateformisation:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+---
+#######################################
+# Kong Route                          #
+#######################################
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: remote-panorama-demo
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /remotepanorama
+        backend:
+          serviceName: panorama-remote-call
+          servicePort: 80
