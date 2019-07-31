@@ -1,0 +1,58 @@
+#######################################
+# microservice control et validation  #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: retraitcsl
+  name: retraitcsl
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8092
+  selector:
+    app: retraitcsl
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: retraitcsl
+  labels:
+    app: retraitcsl
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: retraitcsl
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: retraitcsl
+        version: v1
+    spec:
+      containers:
+      - name: retraitcsl
+        image: samihoss/microservice-controlersaisie:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8092
+---
+#######################################
+# Kong Route                          #
+#######################################
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: retraitcsl
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /retraitcsl
+        backend:
+          serviceName: retraitcsl
+          servicePort: 80
