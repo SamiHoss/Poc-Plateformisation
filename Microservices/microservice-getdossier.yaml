@@ -1,0 +1,43 @@
+#######################################
+# Microservice getdossierinfos        #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: getdossier
+  name: getdossier
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8091
+  selector:
+    app: getdossier
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: getdossier
+  labels:
+    app: getdossier
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: getdossier
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: getdossier
+        version: v1
+    spec:
+      containers:
+      - name: getdossier
+        image: samihoss/microservice-dossierinfos:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8091
+---
