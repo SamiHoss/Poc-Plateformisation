@@ -1,0 +1,43 @@
+#######################################
+# Microservice getuserinfos           #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: getuser
+  name: getuser
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8090
+  selector:
+    app: getuser
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: getuser
+  labels:
+    app: getuser
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: getuser
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: getuser
+        version: v1
+    spec:
+      containers:
+      - name: getuser
+        image: samihoss/microservice-userinfos:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8090
+---
