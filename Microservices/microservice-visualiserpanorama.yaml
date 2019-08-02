@@ -1,0 +1,44 @@
+#######################################
+# Microservice visualiserpanorama     #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: visualiser
+  name: visualiser
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8095
+  selector:
+    app: visualiser
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visualiser
+  labels:
+    app: visualiser
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: visualiser
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: visualiser
+        version: v1
+    spec:
+      containers:
+      - name: visualiser
+        image: samihoss/microservice-visualiserpanorama:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8095
+---
