@@ -1,44 +1,44 @@
 #######################################
-# Microservice wsaccountpanorama      #
+# Microservice visualiserpanorama     #
 #######################################
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: wsaccount
-  name: wsaccount
+    app: visualiser
+  name: visualiser
 spec:
   ports:
   - name: http
     port: 80
     protocol: TCP
-    targetPort: 8096
+    targetPort: 8095
   selector:
-    app: wsaccount
+    app: visualiser
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wsaccount
+  name: visualiser
   labels:
-    app: wsaccount
+    app: visualiser
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: wsaccount
+      app: visualiser
       version: v1
   template:
     metadata:
       labels:
-        app: wsaccount
+        app: visualiser
         version: v1
     spec:
       containers:
-      - name: wsaccount
-        image: samihoss/microservice-wsaccountpanorama:latest
+      - name: visualiser
+        image: samihoss/microservice-visualiserpanorama:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 8096
+        - containerPort: 8095
 ---
