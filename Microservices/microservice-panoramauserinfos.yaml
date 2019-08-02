@@ -1,0 +1,44 @@
+#######################################
+# Microservice getpanoramauserinfos   #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: getuserpanorama
+  name: getuserpanorama
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8094
+  selector:
+    app: getuserpanorama
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: getuserpanorama
+  labels:
+    app: getuserpanorama
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: getuserpanorama
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: getuserpanorama
+        version: v1
+    spec:
+      containers:
+      - name: getuserpanorama
+        image: samihoss/microservice-panoramauserinfos:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8094
+---
