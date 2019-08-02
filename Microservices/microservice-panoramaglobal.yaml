@@ -1,0 +1,58 @@
+#######################################
+# microservice integration 4 panorama #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: panorama
+  name: panorama
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8097
+  selector:
+    app: panorama
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: panorama
+  labels:
+    app: panorama
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: panorama
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: panorama
+        version: v1
+    spec:
+      containers:
+      - name: panorama
+        image: samihoss/microservice-panoramaglobal:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8097
+---
+#######################################
+# Kong Route                          #
+#######################################
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: panorama
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /panorama
+        backend:
+          serviceName: panorama
+          servicePort: 80
