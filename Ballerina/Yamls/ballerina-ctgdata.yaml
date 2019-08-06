@@ -1,0 +1,44 @@
+#######################################
+# Microservice ctgdata                #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ballerina-ctgdata
+  name: ballerina-ctgdata
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 9093
+  selector:
+    app: ballerina-ctgdata
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ballerina-ctgdata
+  labels:
+    app: ballerina-ctgdata
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ballerina-ctgdata
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: ballerina-ctgdata
+        version: v1
+    spec:
+      containers:
+      - name: ballerina-ctgdata
+        image: samihoss/ballerina-ctgdata:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9093
+---
