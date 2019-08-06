@@ -1,0 +1,44 @@
+#######################################
+# Microservice getdossierinfos        #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ballerina-getdossier
+  name: ballerina-getdossier
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 9092
+  selector:
+    app: ballerina-getdossier
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ballerina-getdossier
+  labels:
+    app: ballerina-getdossier
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ballerina-getdossier
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: ballerina-getdossier
+        version: v1
+    spec:
+      containers:
+      - name: ballerina-getdossier
+        image: samihoss/ballerina-dossierinfos:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9092
+---
