@@ -1,0 +1,44 @@
+#######################################
+# Microservice wsaccount              #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ballerina-wsaccount
+  name: ballerina-wsaccount
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 9096
+  selector:
+    app: ballerina-wsaccount
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ballerina-wsaccount
+  labels:
+    app: ballerina-wsaccount
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ballerina-wsaccount
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: ballerina-wsaccount
+        version: v1
+    spec:
+      containers:
+      - name: ballerina-wsaccount
+        image: samihoss/ballerina-wsaccountpanorama:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9096
+---

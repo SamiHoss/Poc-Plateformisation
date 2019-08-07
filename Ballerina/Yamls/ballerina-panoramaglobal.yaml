@@ -1,0 +1,59 @@
+#######################################
+# microservice panorama global        #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ballerina-panorama
+  name: ballerina-panorama
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 9097
+  selector:
+    app: ballerina-panorama
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ballerina-panorama
+  labels:
+    app: ballerina-panorama
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ballerina-panorama
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: ballerina-panorama
+        version: v1
+    spec:
+      containers:
+      - name: ballerina-panorama
+        image: samihoss/ballerina-panoramaglobal:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9097
+---
+# #######################################
+# # Kong Route                          #
+# #######################################
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: ballerina-retraitcsl
+# spec:
+#   rules:
+#   - http:
+#       paths:
+#       - path: /ballerina/retraitcsl
+#         backend:
+#           serviceName: ballerina-retraitcsl
+#           servicePort: 80

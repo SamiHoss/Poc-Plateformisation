@@ -1,0 +1,44 @@
+#######################################
+# Microservice visuliserpanorama      #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ballerina-visualiser
+  name: ballerina-visualiser
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 9095
+  selector:
+    app: ballerina-visualiser
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ballerina-visualiser
+  labels:
+    app: ballerina-visualiser
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ballerina-visualiser
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: ballerina-visualiser
+        version: v1
+    spec:
+      containers:
+      - name: ballerina-visualiser
+        image: samihoss/ballerina-visualiserpanorama:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9095
+---
