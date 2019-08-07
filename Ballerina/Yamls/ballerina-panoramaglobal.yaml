@@ -15,6 +15,7 @@ spec:
     targetPort: 9097
   selector:
     app: ballerina-panorama
+  type : LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
