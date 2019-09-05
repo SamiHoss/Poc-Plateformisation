@@ -1,0 +1,58 @@
+#######################################
+# microservice integration 4 panorama #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: c4bq-panorama
+  name: c4bq-panorama
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8280
+  selector:
+    app: c4bq-panorama
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c4bq-panorama
+  labels:
+    app: c4bq-panorama
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c4bq-panorama
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: c4bq-panorama
+        version: v1
+    spec:
+      containers:
+      - name: c4bq-panorama
+        image: samihoss/c4bq-mspanorama:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8280
+---
+#######################################
+# Kong Route                          #
+#######################################
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: c4bq-panorama
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /c4bq-panorama
+        backend:
+          serviceName: c4bq-panorama
+          servicePort: 80
