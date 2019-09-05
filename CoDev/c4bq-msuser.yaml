@@ -1,0 +1,43 @@
+#######################################
+# Microservice getuserinfos           #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: c4bq-user
+  name: c4bq-user
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: c4bq-user
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c4bq-user
+  labels:
+    app: c4bq-user
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c4bq-user
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: c4bq-user
+        version: v1
+    spec:
+      containers:
+      - name: c4bq-user
+        image: samihoss/c4bq-msuser:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+---
