@@ -1,0 +1,43 @@
+#######################################
+# Microservice epargne                #
+#######################################
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: c4bq-epargne
+  name: c4bq-epargne
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8180
+  selector:
+    app: c4bq-epargne
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c4bq-epargne
+  labels:
+    app: c4bq-epargne
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c4bq-epargne
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: c4bq-epargne
+        version: v1
+    spec:
+      containers:
+      - name: c4bq-epargne
+        image: samihoss/c4bq-msepargne:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8180
+---
